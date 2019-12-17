@@ -2,7 +2,7 @@
 #define KALMAN_FILTER_H_
 
 #include "Eigen/Dense"
-
+#include "tools.h"
 class KalmanFilter {
  public:
   /**
@@ -45,7 +45,7 @@ class KalmanFilter {
    * @param z The measurement at k+1
    */
   void UpdateEKF(const Eigen::VectorXd &z);
-
+  
   // state vector
   Eigen::VectorXd x_;
 
@@ -63,6 +63,12 @@ class KalmanFilter {
 
   // measurement covariance matrix
   Eigen::MatrixXd R_;
+private:
+  /**
+   * Updates the variables common to KF and EKF
+   * @param z The measurement at k+1
+   */
+  void UpdateCommon(const Eigen::VectorXd &z, const VectorXd y);
 };
 
 #endif // KALMAN_FILTER_H_
