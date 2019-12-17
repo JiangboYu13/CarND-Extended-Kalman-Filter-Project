@@ -68,7 +68,7 @@ private:
    * Updates the variables common to KF and EKF
    * @param z The measurement at k+1
    */
-  void UpdateCommon(const Eigen::VectorXd &z, const VectorXd y);
+  void UpdateCommon(const Eigen::VectorXd &z, const Eigen::VectorXd& y);
 };
 
 #endif // KALMAN_FILTER_H_

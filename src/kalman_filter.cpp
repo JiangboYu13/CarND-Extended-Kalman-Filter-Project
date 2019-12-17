@@ -1,5 +1,8 @@
 #include "kalman_filter.h"
 #include <cmath>
+#include <iostream>
+using std::cout;
+using std::endl;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
@@ -29,11 +32,12 @@ void KalmanFilter::Predict() {
   x_ = F_*x_;
   P_ = F_*P_*F_.transpose()+Q_;
 }
-void KalmanFilter::UpdateCommon(const VectorXd &z, const VectorXd y) {
+void KalmanFilter::UpdateCommon(const VectorXd &z, const VectorXd& y) {
  
-  VectorXd S = H_*P_*H_.transpose()+R_;
-  VectorXd K = P_*H_.transpose()*S_.inverse();
-  VectorXd I = MatrixXd::Identity(x_.size(), x_.size());
+  
+  MatrixXd S = H_*P_*H_.transpose()+R_;
+  MatrixXd K = P_*H_.transpose()*S.inverse();
+  MatrixXd I = MatrixXd::Identity(x_.size(), x_.size());
   x_ = x_ + K*y;
   P_ = (I - K*H_)*P_;
 }

@@ -51,7 +51,7 @@ MatrixXd FusionEKF::obtainF(float dt)
      0, 1, 0 , dt,
      0, 0, 1 , 0 ,
      0, 0, 0 , 1 ;
-  retrn F;
+  return F;
 }
 MatrixXd FusionEKF::obtainQ(float dt)
 {
@@ -81,8 +81,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
     ekf_.x_ << 1, 1, 1, 1;
-    kf_.P_ = MatrixXd(4, 4);
-  
+    ekf_.P_ = MatrixXd(4, 4);
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
       float rho = measurement_pack.raw_measurements_[0];
       float phi = measurement_pack.raw_measurements_[1];
@@ -91,12 +90,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       ekf_.x_(1)=rho*sin(phi);
       ekf_.x_(2)=rhodot*cos(phi);
       ekf_.x_(3)=rhodot*sin(phi);
-      kf_.P_ << 0.01, 0, 0, 0,
+      ekf_.P_ << 0.01, 0, 0, 0,
                 0, 0.01, 0, 0,
                 0, 0, 100, 0,
                 0, 0, 0, 100;
       ekf_.R_ = R_radar_;
-      ekf_.H_ = Tools::CalculateJacobian(ekf_.x_);
+      ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
       // TODO: Convert radar from polar to cartesian coordinates 
       //         and initialize state.
       ekf_.UpdateEKF(measurement_pack.raw_measurements_);
@@ -105,7 +104,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       // TODO: Initialize state.
       ekf_.x_(0) = measurement_pack.raw_measurements_[0];
       ekf_.x_(1) = measurement_pack.raw_measurements_[1];
-      kf_.P_ << 0.01, 0, 0, 0,
+      ekf_.P_ << 0.01, 0, 0, 0,
                 0, 0.01, 0, 0,
                 0, 0, 1000, 0,
                 0, 0, 0, 1000;
@@ -134,7 +133,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   ekf_.F_ = obtainF(dt);
   ekf_.Q_ = obtainQ(dt);
   ekf_.Predict();
-
   /**
    * Update
    */
@@ -148,7 +146,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // TODO: Radar updates
     ekf_.R_ = R_radar_;
-    ekf_.H_ = Tools::CalculateJacobian(ekf_.x_);
+    ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
 
   } else {
