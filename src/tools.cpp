@@ -6,6 +6,7 @@ using Eigen::MatrixXd;
 using std::vector;
 using std::cout;
 using std::endl;
+
 float radianRound(float rad)
 {
 
@@ -57,16 +58,17 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   MatrixXd Hj(3,4);
-  float px = x_state(0)+1e6;
-  float py = x_state(1)+1e6;
-  float vx = x_state(2)+1e6;
-  float vy = x_state(3)+1e6;
+  float px = x_state(0)+1e-6;
+  float py = x_state(1)+1e-6;
+  float vx = x_state(2)+1e-6;
+  float vy = x_state(3)+1e-6;
   float sq_p = px*px+py*py;
-  float sqrt_p = sqrt(px*px+py*py);
+  float sqrt_p = sqrt(sq_p);
+  float p_2_3 = sq_p*sqrt_p;
   // compute the Jacobian matrix
 
-  Hj << px/sqrt_p, py/sqrt_p, 0, 0,
+  Hj <<   px/sqrt_p, py/sqrt_p, 0, 0,
         -py/sq_p, px/sq_p, 0, 0,
-        py*(vx*py-vy*px)/pow(sq_p, -2/3.0),px*(vy*px-vx*py)/pow(sq_p, -2/3.0),px/sqrt_p, py/sqrt_p;
+        py*(vx*py-vy*px)/p_2_3,px*(vy*px-vx*py)/p_2_3,px/sqrt_p, py/sqrt_p;
   return Hj;
 }

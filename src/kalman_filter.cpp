@@ -77,10 +77,10 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   cout<<"x_: "<<x_<<endl;
   cout<<"H_: "<<H_<<endl;
   cout<<"z: "<<z<<endl;
-  float px = x_(0)+1e6;
-  float py = x_(1)+1e6;
-  float vx = x_(2)+1e6;
-  float vy = x_(3)+1e6;
+  float px = x_(0)+1e-6;
+  float py = x_(1)+1e-6;
+  float vx = x_(2)+1e-6;
+  float vy = x_(3)+1e-6;
   VectorXd h_x(3);
   h_x<< sqrt(px*px+py*py), atan2(py, px), (px*vx+py*vy)/sqrt(px*px+py*py);
   cout<<"h_x: "<<h_x<<endl;
