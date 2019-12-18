@@ -35,7 +35,7 @@ FusionEKF::FusionEKF() {
    * TODO: Set the process and measurement noises
    */
   H_laser_ << 1, 0, 0, 0,
-              0, 1, 0, 0;
+          0, 1, 0, 0;
 
   ekf_.P_ = MatrixXd(4, 4);
   ekf_.P_ <<  1, 0, 0, 0,
@@ -53,7 +53,7 @@ FusionEKF::~FusionEKF() {}
 MatrixXd FusionEKF::obtainF(float dt)
 {
   MatrixXd F(4,4);
-  F<<1, 0, dt, 0 ,
+  F<< 1, 0, dt, 0 ,
      0, 1, 0 , dt,
      0, 0, 1 , 0 ,
      0, 0, 0 , 1 ;
@@ -66,9 +66,9 @@ MatrixXd FusionEKF::obtainQ(float dt)
   float dt4 = pow(dt, 4);
   MatrixXd Q = MatrixXd(4, 4);
   Q <<  dt4/4*noise_ax, 0,              dt3/2*noise_ax, 0,
-      0,              dt4/4*noise_ay, 0,              dt3/2*noise_ay,
-      dt3/2*noise_ax, 0,              dt2*noise_ax,   0,
-      0,              dt3/2*noise_ay, 0,              dt2*noise_ay;
+       0,              dt4/4*noise_ay, 0,              dt3/2*noise_ay,
+       dt3/2*noise_ax, 0,              dt2*noise_ax,   0,
+       0,              dt3/2*noise_ay, 0,              dt2*noise_ay;
   return Q;
 
 }
@@ -135,13 +135,16 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   cout<<"Predict"<<endl;
   float dt = (measurement_pack.timestamp_ - previous_timestamp_)/1000000.0;
   previous_timestamp_ = measurement_pack.timestamp_;
-  ekf_.F_ = obtainF(dt);
-  ekf_.Q_ = obtainQ(dt);
-  ekf_.Predict();
+  cout<<"dt="<<dt<<endl;
+  if (dt>1e-6){
+    ekf_.F_ = obtainF(dt);
+    ekf_.Q_ = obtainQ(dt);
+    ekf_.Predict();
+  }
   /**
    * Update
    */
-  cout<<"x state with dt="<<dt<<endl;
+  
   cout << "x_ = " << ekf_.x_ << endl;
   cout << "P_ = " << ekf_.P_ << endl;
   /**
@@ -158,11 +161,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
 
   } else {
+    
+    // TODO: Laser updates
     cout << "Lidar Update" << endl;
     ekf_.R_ = R_laser_;
     ekf_.H_ = H_laser_;
     ekf_.Update(measurement_pack.raw_measurements_);
-    // TODO: Laser updates
 
   }
 

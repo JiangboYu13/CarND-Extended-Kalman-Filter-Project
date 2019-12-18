@@ -58,6 +58,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   MatrixXd Hj(3,4);
+  //Add 1e-6 to avoid dividing by zero
   float px = x_state(0)+1e-6;
   float py = x_state(1)+1e-6;
   float vx = x_state(2)+1e-6;
