@@ -6,6 +6,17 @@ using Eigen::MatrixXd;
 using std::vector;
 using std::cout;
 using std::endl;
+float radianRound(float rad)
+{
+
+  while(rad > PI)
+    rad -= 2*PI;
+
+  while(rad < -PI)
+    rad += 2*PI;
+
+  return rad;
+}
 Tools::Tools() {}
 
 Tools::~Tools() {}
@@ -56,6 +67,6 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 
   Hj << px/sqrt_p, py/sqrt_p, 0, 0,
         -py/sq_p, px/sq_p, 0, 0,
-        py*(vx*py-vy*px)/pow(sq_p, -2/3),px*(vy*px-vx*py)/pow(sq_p, -2/3),px/sqrt_p, py/sqrt_p;
+        py*(vx*py-vy*px)/pow(sq_p, -2/3.0),px*(vy*px-vx*py)/pow(sq_p, -2/3.0),px/sqrt_p, py/sqrt_p;
   return Hj;
 }

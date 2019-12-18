@@ -3,7 +3,10 @@
 
 #include <vector>
 #include "Eigen/Dense"
+#define PI 3.1415926
+float radianRound(float rad);
 
+  
 class Tools {
  public:
   /**
